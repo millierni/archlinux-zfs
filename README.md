@@ -36,7 +36,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   curl -s https://raw.githubusercontent.com/eoli3n/archiso-zfs/master/init | bash
   ```
-- Import and destroy ZFS pool (if it's contains pools)
+- Import and destroy ZFS pool (if it contains pools)
   ```
   zpool import -d /dev/disk/by-id -f bpool
   zpool import -d /dev/disk/by-id -f rpool
