@@ -256,9 +256,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   -Add a user
   ```
-  useradd -m <user>
-  passwd <user>
-  chown <user>:<user> /home/<user>
+  USER=magicunicorn
+  useradd -m $USER
+  passwd $USER
+  chown $USER:$USER /home/$USER
   ```
 - Install packages:
   ```
