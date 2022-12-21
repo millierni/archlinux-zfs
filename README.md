@@ -23,7 +23,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [archzfs]
   Include = /etc/pacman.d/mirrorlist-archzfs
   EOF
-  
   pacman -Syy
   ```
 - Install keysrings and create trust database and refresh keys
