@@ -5,36 +5,49 @@
 
 References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-linux-on-zfs-part-2-installation.html#efi-bootloader) | [arch-systemd-boot-wiki](https://wiki.archlinux.org/index.php/Systemd-boot) \]
 
-- Set and Update mirrors list:
+
+- Download the ISO and create a bootable USB with an Arch Linux distro
+  + [EndeavourOS](https://endeavouros.com/latest-release/)
+  
+- Boot on the USB
+- Add ZFS repo
   ```
-  pacman-mirrors --country-list    # list all pacman mirror countries
-  pacman-mirrors --api --set-branch stable --country United_States,Singapore,Canada
-  pacman -Sy
+  curl -L https://archzfs.com/archzfs.gpg |  pacman-key -a -
+  pacman-key --lsign-key $(curl -L https://git.io/JsfVS)
+  curl -L https://git.io/Jsfw2 > /etc/pacman.d/mirrorlist-archzfs
+
+  tee -a /etc/pacman.conf <<- 'EOF'
+
+  #[archzfs-testing]
+  #Include = /etc/pacman.d/mirrorlist-archzfs
+
+  [archzfs]
+  Include = /etc/pacman.d/mirrorlist-archzfs
+  EOF
+  ```
+- Update the software database
+  ```
+  pacman -Syy
   ```
 - Install keysrings and create trust database and refresh keys
   ```
-  pacman -S --noconfirm pacman archlinux-keyring manjaro-keyring ntp
+  pacman -S --noconfirm archlinux-keyring
   pacman-key --init
-  pacman-key --populate archlinux manjaro
+  pacman-key --populate archlinux
   pacman-key --refresh-keys
   ```
-- Install zfs
+- Install and load ZFS
   ```
-  pacman -S --noconfirm linux54-zfs # install ZFS, change by your linux kernel
-  or 
-  sudo dkms autoinstall zfs # for zfs-dkms
-  modprobe zfs          # load zfs module
-  lsmod | grep zfs      # see zfs module loaded
-  zfs --version         # check version
+  curl -s https://raw.githubusercontent.com/eoli3n/archiso-zfs/master/init | bash
   ```
 - Set `DISK0`, `DISK1` and `DISK2` variables and erase them
   - `ls -lF /dev/disk/by-id` and set the UUID of your own hard disks
   ```
-  DISK0=/dev/disk/by-id/ata-VBOX_HARDDISK_VB0a4a9fa5-eb40797e # use your own
-  DISK1=/dev/disk/by-id/ata-VBOX_HARDDISK_VB18c0305d-4e63e5c6 # use your own
-  DISK2=/dev/disk/by-id/ata-VBOX_HARDDISK_VB0a4a9fa5-eb40797e # use your own
+  DISK0=/dev/disk/by-id/{UUID#0} # Change UUID with the associated drive
+  DISK1=/dev/disk/by-id/{UUID#1} # Change UUID with the associated drive
+  DISK2=/dev/disk/by-id/{UUID#2} # Change UUID with the associated drive
   
-  pacman -S --noconfirm gptfdisk
+  #pacman -S --noconfirm gptfdisk # If it's not already installed
   sgdisk --zap-all $DISK0
   sgdisk --zap-all $DISK1
   sgdisk --zap-all $DISK2
@@ -88,7 +101,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     -O normalization=formD -O relatime=on -O xattr=sa \
     -O mountpoint=none -R /mnt -f $BPOOL raidz1 ${DISK0}-part2 ${DISK1}-part2 ${DISK2}-part2
   ```
-- create root pool (use `ashift=13` for Samsung SSD):
+- create root pool (use `ashift=13` for Enterprise SSD):
   ```
   RPOOL=rpool
   zpool create -o ashift=12 \
@@ -167,11 +180,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   findmnt | grep /mnt # shows /mnt, /mnt/home, /mnt/root, /mnt/var/cache/pacman, /mnt/boot, /mnt/efi0, /mnt/efi1, /mnt/efi2 as mounted
   ```
-- use `basestrap` to install base set of packages into `/mnt`
+- use `pacstrap` to install base set of packages into `/mnt`
   ```
-  basestrap /mnt base linux54-zfs zfs-utils mkinitcpio grub efibootmgr dosfstools \
-    dhcpcd networkmanager openssh vi nano sudo man man-pages which bash-completion
-  # removed - intel-ucode systemd-boot-manager
+  pacstrap /mnt base vi mandoc grub efibootmgr mkinitcpio
+  CompatibleVer=$(pacman -Si zfs-linux | grep 'Depends On' | sed "s|.*linux=||" | awk '{ print $1 }')
+  pacstrap -U /mnt https://archive.archlinux.org/packages/l/linux/linux-${CompatibleVer}-x86_64.pkg.tar.zst
+  pacstrap /mnt zfs-linux zfs-utils
+  pacstrap /mnt linux-firmware intel-ucode amd-ucode
   ```
 - edit `/mnt/etc/mkinitcpio.conf` and change `HOOKS` line to be: `HOOKS=(base udev autodetect modconf block keyboard zfs filesystems)`
   ```
@@ -224,7 +239,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - set hostname and edit `/etc/hosts` file:
   ```
   # call it whatever you want
-  HOSTNAME=manjaz
+  HOSTNAME=littlepony
   echo $HOSTNAME > /etc/hostname
   cat >> /etc/hosts << EOF
   127.0.0.1       localhost
@@ -232,18 +247,12 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   127.0.1.1       $HOSTNAME
   EOF
   ```
-- Allow members of `wheel` group to admin machine, and choose 1. or 2.
-  1. Uncomment `%wheel ALL=(ALL) ALL` -- `sudo` would require a password **or**
-     ```
-     sed -E 's|^#?[ \t]*(\%wheel ALL=\(ALL\) ALL.*)$|\1|g' /etc/sudoers | EDITOR=tee visudo
-     ```
-  2. Uncomment `%wheel ALL=(ALL) NOPASSWD: ALL` -- `sudo` does not require a password
-     ```
-     sed -E 's|^#?[ \t]*(\%wheel ALL=\(ALL\) NOPASSWD.*)$|\1|g' /etc/sudoers | EDITOR=tee visudo
-     ```
+  
+  
+  
+  
 - enable dhcp client and NTP client:
   ```
-  systemctl enable dhcpcd
   systemctl enable systemd-timesyncd
   ```
 - make initramfs:
