@@ -254,13 +254,18 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   127.0.1.1       $HOSTNAME
   EOF
   ```
-  
-  
-  
-  
-- enable dhcp client and NTP client:
+  -Add a user
   ```
+  useradd -m <user>
+  passwd <user>
+  chown <user>:<user> /home/<user>
+  ```
+- Install packages:
+  ```
+  pacman -S ntp nano networkmanager dhcpcd iwd
   systemctl enable systemd-timesyncd
+  systemctl enable ntpd
+  systemctl enable dhcpcd NetworkManager
   ```
 - make initramfs:
   ```
