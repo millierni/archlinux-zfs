@@ -329,12 +329,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ZPOOL_VDEV_NAME_PATH=1 grub-mkconfig -o /boot/grub/grub.cfg
   ZPOOL_VDEV_NAME_PATH=1 grub-install --target=x86_64-efi --efi-directory=/efi0 --bootloader-id=GRUB
   ```
-- sync the two EFI partitions:
-  ```
-  pacman -S --noconfirm rsync
-  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi1
-  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi2
-  ```
 - do efibootmgr on disk2
   ```
   efibootmgr -c -g -d $DISK1 -p 1 -L "GRUB-1" -l '\EFI\GRUB\grubx64.efi'
