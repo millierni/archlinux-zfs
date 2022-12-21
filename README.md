@@ -299,7 +299,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   ZPOOL_VDEV_NAME_PATH=1 grub-probe /boot # should return "zfs"
   ```
-- modify `/etc/default/grub` - add `zfs=rpool`: ref \[ [grub-error-sparse-file-not-allowed-fix](https://forum.manjaro.org/t/solved-grub-btrfs-error-sparse-file-not-allowed/70031) \]
+- Modify `/etc/default/grub` - add `zfs=rpool`: ref \[ [grub-error-sparse-file-not-allowed-fix](https://forum.manjaro.org/t/solved-grub-btrfs-error-sparse-file-not-allowed/70031) \]
   ```
   [[ -f /etc/default/grub.original ]] && cp /etc/default/grub.original /etc/default/grub
   cp /etc/default/grub /etc/default/grub.original
@@ -326,12 +326,17 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sed -i -E 's/(^GRUB_CMDLINE_LINUX_DEFAULT=")([ \t]+)(.*)(")/\1\3\4/g' /etc/default/grub
   sed -i -E 's/(^GRUB_CMDLINE_LINUX_DEFAULT=")(.*)([ \t]+)(")/\1\2\4/g' /etc/default/grub
   ```
-- run grub-mkconfig and install grub:
+- Run grub-mkconfig and install grub
   ```
   ZPOOL_VDEV_NAME_PATH=1 grub-mkconfig -o /boot/grub/grub.cfg
   ZPOOL_VDEV_NAME_PATH=1 grub-install --target=x86_64-efi --efi-directory=/efi0 --bootloader-id=GRUB
   ```
-- do efibootmgr on disk2
+- Sync the EFI partitions
+  ```
+  pacman -S --noconfirm rsync
+  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi1 /efi2
+  ```  
+- Do efibootmgr on disk2
   ```
   efibootmgr -c -g -d $DISK1 -p 1 -L "GRUB-1" -l '\EFI\GRUB\grubx64.efi'
   efibootmgr -c -g -d $DISK2 -p 1 -L "GRUB-2" -l '\EFI\GRUB\grubx64.efi'
