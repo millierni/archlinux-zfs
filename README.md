@@ -44,13 +44,14 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   zpool destroy bpool
   zpool destroy rpool
   ```
-- Set `DISK0`, `DISK1` and `DISK2` variables and erase them
+- Set `DISK0`, `DISK1` and `DISK2` variables
   - `ls -lF /dev/disk/by-id` and set the UUID of your own hard disks
   ```
   DISK0=/dev/disk/by-id/{UUID#0} # Change UUID with the associated drive
   DISK1=/dev/disk/by-id/{UUID#1} # Change UUID with the associated drive
   DISK2=/dev/disk/by-id/{UUID#2} # Change UUID with the associated drive
-  
+- Erase `DISK0`, `DISK1` and `DISK2`
+  ```
   #pacman -S --noconfirm gptfdisk # If it's not already installed
   sgdisk --zap-all $DISK0
   sgdisk --zap-all $DISK1
