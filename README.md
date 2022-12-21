@@ -292,9 +292,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - install grub
   ```
   pacman -S --noconfirm grub efibootmgr
-  # mount /efi0
-  # mount /efi1
-  # mount /efi2
   ```
 - create `/etc/default/grub`
   ```
