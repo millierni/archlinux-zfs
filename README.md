@@ -40,6 +40,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   zpool import -d /dev/disk/by-id -f bpool
   zpool import -d /dev/disk/by-id -f rpool
+  sleep 1
   zpool destroy bpool
   zpool destroy rpool
   ```
