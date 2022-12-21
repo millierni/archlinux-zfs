@@ -215,9 +215,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   BPOOL=$BPOOL
   EOF
   ```
-- chroot into new installation:
+- Reload systemd
   ```
-  manjaro-chroot /mnt /usr/bin/env DISK0=$DISK0 DISK1=$DISK1 DISK2=$DISK2 RPOOL=$RPOOL BPOOL=$BPOOL /bin/bash
+  systemctl daemon-reload
+  ```
+- chroot into new installation
+  ```
+  arch-chroot /mnt /usr/bin/env DISK0=$DISK0 DISK1=$DISK1 DISK2=$DISK2 RPOOL=$RPOOL BPOOL=$BPOOL /bin/bash
   ```
 - set timezone:
   ```
