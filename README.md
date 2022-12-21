@@ -334,7 +334,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Sync the EFI partitions
   ```
   pacman -S --noconfirm rsync
-  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi1/./ /efi2
+  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi1 /efi2
   ```  
 - Do efibootmgr on disk2
   ```
