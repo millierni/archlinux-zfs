@@ -222,7 +222,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - set timezone:
   ```
   rm -rf /etc/localtime
-  ln -sf /usr/share/zoneinfo/Asia/Bangkok /etc/localtime
+  ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
   hwclock --systohc --utc # generate /etc/adjtime and set HW RTC to UTC
   ```
 - generate locales:
