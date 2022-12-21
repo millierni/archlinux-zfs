@@ -270,7 +270,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - make initramfs:
   ```
-  mkinitcpio -P # mkinitcpio -p linux54
+  mkinitcpio -P
   ```
 - set root password:
   ```
