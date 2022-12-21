@@ -277,12 +277,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   echo "root:abc" | chpasswd # change root password to `abc`
   grep root /etc/shadow # should show: root:$6$.....
   ```
-> - generate mount points for EFI partitions:
->  ```
->  mkdir -p /efi0
->  mkdir -p /efi1
->  mkdir -p /efi2
->  ```
 - add 3 EFI partitions to `/etc/fstab`
   ```
   # comment everything on /etc/fstab
