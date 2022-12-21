@@ -199,7 +199,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - copy `/etc/fstab` to new installation:
   ```
   # cp /etc/fstab /mnt/etc/fstab.old    # keep old fstab
-  fstabgen -U /mnt >> /mnt/etc/fstab  # generate new fstab
+  genfstab -U /mnt >> /mnt/etc/fstab  # generate new fstab
   ```
 > - since we mounted `/var/cache/pacman` and `/home` via ZFS (non-legacy), we need to remove these entries from the new `/mnt/etc/fstab`
 >   ```
