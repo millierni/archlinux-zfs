@@ -445,7 +445,27 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 >   ```
 >   IgnorePkg = linux54-zfs  # so this package won't be updated
 >   ```
-- install desktop environment
+- install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
+  - Install graphics drivers
+    - AMD
+    ```
+    pacman -S xf86-video-amdgpu mesa
+    ```
+    - NVIDIA
+    ```
+    pacman -S nvidia nvidia-utils
+    ```
+    - Intel
+    ```
+    pacman -S xf86-video-intel mesa
+    ```
+  - If you choose KDE desktop
   ```
-  https://wiki.manjaro.org/index.php/Install_Desktop_Environments#Overview  
+  pacman -Sy xorg plasma kde-applications plasma-wayland-session sddm
+  sleep 1
+  systemctl enable sddm
+  ```
+  - Reboot the OS
+  ```
+  reboot
   ```
