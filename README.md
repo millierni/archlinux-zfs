@@ -256,7 +256,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Install packages:
   ```
-  pacman -S --noconfirm ntp nano networkmanager dhcpcd iwd
+  pacman -S --noconfirm ntp sudo nano networkmanager dhcpcd iwd
   systemctl enable systemd-timesyncd
   systemctl enable ntpd
   systemctl enable dhcpcd NetworkManager
