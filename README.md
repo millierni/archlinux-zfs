@@ -44,12 +44,23 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   zpool destroy bpool
   zpool destroy rpool
   ```
-- Set `DISK0`, `DISK1` and `DISK2` variables
-  - `ls -lF /dev/disk/by-id` and set the UUID of your own hard disks
+- Set `UUID0`, `UUID1` and `UUID2` variables
+  - `ls -lF /dev/disk/by-id` and set the UUID of your own drive
   ```
-  DISK0=/dev/disk/by-id/{UUID#0} # Change UUID with the associated drive
-  DISK1=/dev/disk/by-id/{UUID#1} # Change UUID with the associated drive
-  DISK2=/dev/disk/by-id/{UUID#2} # Change UUID with the associated drive
+  UUID0=
+  ```
+  ```
+  UUID1=
+  ```
+  ```
+  UUID2=
+  ```
+- Set `DISK0`, `DISK1` and `DISK2` variables
+  ```
+  DISK0=/dev/disk/by-id/$UUID0
+  DISK1=/dev/disk/by-id/$UUID1
+  DISK2=/dev/disk/by-id/$UUID2
+  ```
 - Erase `DISK0`, `DISK1` and `DISK2`
   ```
   #pacman -S --noconfirm gptfdisk # If it's not already installed
@@ -166,24 +177,9 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   mount -t vfat ${DISK1}-part1 /mnt/efi1
   mount -t vfat ${DISK2}-part1 /mnt/efi2
   ```
-> - edit `/etc/fstab` to include the above 4 pools from $RPOOL:
->   ```
->   echo "# generated fstab
->   # <file system>                <dir>              <type>    <options>                <dump> <pass>
->   $RPOOL/ROOT/os/root         /                  zfs       defaults,noatime          0      0
->   $RPOOL/ROOT/os/paccache     /var/cache/pacman  zfs       defaults,noatime          0      0
->   $RPOOL/data/home                 /home              zfs       defaults,noatime          0      0
->   $RPOOL/data/home/root            /root              zfs       defaults,noatime          0      0" \
->   > /etc/fstab
->   ```
-> - Set the bootfs property on the root filesystem. This command will only be successful when `dnodesize` property on `$BPOOL/BOOT/default` is set to `legacy` \[ [ref](https://github.com/zfsonlinux/zfs/issues/8538) \]
->   ```
->   zfs set dnodesize=legacy $BPOOL/BOOT/default
->   zpool set bootfs=$BPOOL/BOOT/default $BPOOL
->   ```
 - double check work:
   ```
-  findmnt | grep /mnt # shows /mnt, /mnt/home, /mnt/root, /mnt/var/cache/pacman, /mnt/boot, /mnt/efi0, /mnt/efi1, /mnt/efi2 as mounted
+  findmnt | grep /mnt # shows mount points
   ```
 - use `pacstrap` to install base set of packages into `/mnt`
   ```
@@ -200,13 +196,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - copy `/etc/fstab` to new installation:
   ```
-  # cp /etc/fstab /mnt/etc/fstab.old    # keep old fstab
   genfstab -U /mnt >> /mnt/etc/fstab  # generate new fstab
   ```
-> - since we mounted `/var/cache/pacman` and `/home` via ZFS (non-legacy), we need to remove these entries from the new `/mnt/etc/fstab`
->   ```
->   sed -i -E 's/^('"$RPOOL"'\/data.*)$/#\1/g; s/^('"$RPOOL"'\/ROOT\/os\/paccache.*)/#\1/g' /mnt/etc/fstab
->   ```
 - save the variables for use later (optional):
   ```
   cat > /mnt/root/vars.sh << EOF
@@ -334,9 +325,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Sync the EFI partitions
   ```
   pacman -S --noconfirm rsync
-  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi1 /efi2
+  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi1
+  rsync -Rai --stats --human-readable --delete --verbose --progress /efi0/./ /efi2
   ```  
-- Do efibootmgr on disk2
+- Do efibootmgr on the other drives
   ```
   efibootmgr -c -g -d $DISK1 -p 1 -L "GRUB-1" -l '\EFI\GRUB\grubx64.efi'
   efibootmgr -c -g -d $DISK2 -p 1 -L "GRUB-2" -l '\EFI\GRUB\grubx64.efi'
@@ -348,12 +340,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sed -i -E 's/^(#PermitRootLogin.*)$/PermitRootLogin yes\n\1/g' /etc/ssh/sshd_config
   systemctl enable sshd
   ```
-> - comment out all the `zfs` from `/etc/fstab`
->  ```
->  cp /etc/fstab /etc/fstab.original
->  sed -i -E 's/^('"$RPOOL"'.*)$/# \1/g' /etc/fstab
->  sed -i -E 's/^('"$BPOOL"'.*)$/# \1/g' /etc/fstab
->  ```
 - enable `zfs-import-cache.service`
   ```
   zpool set cachefile=/etc/zfs/zpool.cache $BPOOL 
@@ -412,20 +398,53 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   reboot
   ```
+- if reboot into GRUB
+  - Set root partition
+  ```
+  set root=(hd0,gpt2) # ls to search for the root partition
+  ```
+  - Load linux kernel
+  ```
+  linux /BOOT/default/@/vmlinuz-linux root=ZFS=rpool/ROOT/os boot=ZFS=bpool/BOOT/default rw
+  ```
+  - Load the filesystem image for booting the kernel
+  ```
+  initrd /BOOT/default/@/initramfs-linux.img
+  ```
+  - Insert video module into the kernel
+  ```
+  insmod all_video
+  ```
+  - Start the OS
+  ```
+  boot
+  ```
 - after reboot, login as *root*
-> - make sure `zfs-import-cache.service` can find zpool cache.
+  - Import all the pools that are not listed with `zpool -list`
+  ```
+  zpool import -d /dev/disk/by-id -f bpool
+  ```
+  - Enable the automatic mounting for the ZFS pools
+  ```
+  systemctl enable zfs-import-cache # if it's not already enabled
+  systemctl enable zfs-mount
+  systemctl enable zfs-import.target
+  systemctl enable zfs.target
+  systemctl start zfs.target
+  ```
+  - Start ZFS support
+  ```
+  modprobe zfs
+  ```
+  - Generate a new GRUB configuration file
+  ```
+  grub-mkconfig -o /boot/grub/grub.cfg
+  reboot  # reboot the OS
+  ```
+> - edit `/etc/pacman.conf` and scroll to `#IgnorePkg` and add:
 >   ```
->   zpool set cachefile=/etc/zfs/zpool.cache zroot # <-- zroot here is our $ZROOT
+>   IgnorePkg = linux54-zfs  # so this package won't be updated
 >   ```
-- edit `/etc/pacman.conf` and scroll to `#IgnorePkg` and add:
-  ```
-  IgnorePkg = linux54-zfs  # so this package won't be updated
-  ```
-- add more packages:
-  ```
-  pacman -S --noconfirm bash-completion pv
-  ```
-  
 - install desktop environment
   ```
   https://wiki.manjaro.org/index.php/Install_Desktop_Environments#Overview  
