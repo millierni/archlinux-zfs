@@ -459,7 +459,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     ```
     pacman -S xf86-video-intel mesa
     ```
-  - If you choose KDE desktop
+  - KDE Plasma desktop
   ```
   pacman -Sy xorg plasma kde-applications plasma-wayland-session sddm
   sleep 1
