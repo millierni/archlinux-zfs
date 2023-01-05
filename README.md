@@ -252,7 +252,14 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   USER=magicunicorn
   useradd -m $USER
   passwd $USER
-  chown $USER:$USER /home/$USER
+  cat >> /etc/sudoers << EOF
+  
+  ##
+  ## $USER privilege specification
+  ##
+  $USER ALL=(ALL:ALL) ALL
+  EOF
+
   ```
 - Install packages:
   ```
