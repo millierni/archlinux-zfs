@@ -263,7 +263,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Install packages:
   ```
-  pacman -S --noconfirm ntp sudo nano networkmanager dhcpcd iwd
+  pacman -S --noconfirm ntp base-devel nano networkmanager dhcpcd iwd
   systemctl enable systemd-timesyncd
   systemctl enable ntpd
   systemctl enable dhcpcd NetworkManager
@@ -452,7 +452,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 >   ```
 >   IgnorePkg = linux54-zfs  # so this package won't be updated
 >   ```
-- install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
+- Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
   - Install graphics drivers
     - AMD
     ```
@@ -475,4 +475,15 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   - Reboot the OS
   ```
   reboot
+  ```
+- Install optional packages
+  ```
+  sudo pacman -S neofetch wget htop git fish
+  sudo git clone https://aur.archlinux.org/yay.git
+  sudo chown -R $USER:$USER yay
+  cd yay
+  makepkg -si
+  cd ..
+  sudo rm -R yay
+  yay -S vscodium-bin
   ```
