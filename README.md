@@ -514,7 +514,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Install optional packages
   ```
-  sudo pacman -S neofetch wget htop git fish
+  sudo pacman -S neofetch wget htop git fish sqlite sqlitebrowser nmap
+  sudo pacman -S steam firefox  # Do not launch firefox!
   sleep 1
   sudo git clone https://aur.archlinux.org/yay.git
   sudo chown -R $USER:$USER yay
@@ -524,5 +525,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sudo rm -R yay
   sleep 1
   yay -S vscodium-bin
-  sleep 1
+  ```
+- Tweak Firefox for privacy
+  ```
+  https://github.com/arkenfox/user.js
+  https://www.unixsheikh.com/articles/choose-your-browser-carefully.html
+  ```
+- Install KVM, QEMU, Virt Manager
+  ```
+  https://computingforgeeks.com/install-kvm-qemu-virt-manager-arch-manjar/
   ```
