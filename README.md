@@ -495,11 +495,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Activate the multilib repository
   ```
+  su
   cat >> /etc/pacman.conf << EOF
 
   [multilib]
   Include = /etc/pacman.d/mirrorlist
   EOF
+  exit
   sudo pacman -Syy
   ```
 - Install optional packages
