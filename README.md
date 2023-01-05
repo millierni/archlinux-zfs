@@ -476,14 +476,32 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   reboot
   ```
+- Add ZFS repo and update the software database
+  ```
+  curl -L https://archzfs.com/archzfs.gpg |  pacman-key -a -
+  pacman-key --lsign-key $(curl -L https://git.io/JsfVS)
+  curl -L https://git.io/Jsfw2 > /etc/pacman.d/mirrorlist-archzfs
+  tee -a /etc/pacman.conf <<- 'EOF'
+
+  #[archzfs-testing]
+  #Include = /etc/pacman.d/mirrorlist-archzfs
+
+  [archzfs]
+  Include = /etc/pacman.d/mirrorlist-archzfs
+  EOF
+  pacman -Syy
+  ```
 - Install optional packages
   ```
   sudo pacman -S neofetch wget htop git fish
+  sleep 1
   sudo git clone https://aur.archlinux.org/yay.git
   sudo chown -R $USER:$USER yay
   cd yay
   makepkg -si
   cd ..
   sudo rm -R yay
+  sleep 1
   yay -S vscodium-bin
+  sleep 1
   ```
