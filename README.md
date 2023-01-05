@@ -478,13 +478,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Add ZFS repo and update the software database
   ```
-  su
-  ```
-  ```
-  curl -L https://archzfs.com/archzfs.gpg |  pacman-key -a -
+  sudo curl -L https://archzfs.com/archzfs.gpg |  pacman-key -a -
   pacman-key --lsign-key $(curl -L https://git.io/JsfVS)
-  curl -L https://git.io/Jsfw2 > /etc/pacman.d/mirrorlist-archzfs
-  tee -a /etc/pacman.conf <<- 'EOF'
+  sudo curl -L https://git.io/Jsfw2 > /etc/pacman.d/mirrorlist-archzfs
+  sudo tee -a /etc/pacman.conf <<- 'EOF'
 
   #[archzfs-testing]
   #Include = /etc/pacman.d/mirrorlist-archzfs
@@ -492,20 +489,15 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [archzfs]
   Include = /etc/pacman.d/mirrorlist-archzfs
   EOF
-  exit
   sudo pacman -Syy
   ```
 - Activate the multilib repository
   ```
-  su
-  ```
-  ```
-  cat >> /etc/pacman.conf << EOF
+  sudo cat >> ~/etc/pacman.conf << EOF
 
   [multilib]
   Include = /etc/pacman.d/mirrorlist
   EOF
-  exit
   sudo pacman -Syy
   ```
 - Install optional packages
