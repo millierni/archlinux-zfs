@@ -512,7 +512,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo pacman -Syy
   ```
-- Install optional packages
+- Install packages (optional)
   ```
   sudo pacman -S neofetch wget htop git fish sqlite sqlitebrowser nmap
   sudo pacman -S steam firefox  # Do not launch firefox!
@@ -526,12 +526,16 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sleep 1
   yay -S vscodium-bin
   ```
-- Tweak Firefox for privacy
+- Tweak Firefox for privacy (optional)
   ```
   https://github.com/arkenfox/user.js
   https://www.unixsheikh.com/articles/choose-your-browser-carefully.html
   ```
-- Install KVM, QEMU, Virt Manager
+- Install KVM, QEMU, Virt Manager (optional)
   ```
   https://computingforgeeks.com/install-kvm-qemu-virt-manager-arch-manjar/
+  ```
+- Install Unreal Engine 5 (optional)
+  ```
+  https://www.unrealengine.com/en-US/linux
   ```
