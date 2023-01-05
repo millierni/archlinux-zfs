@@ -479,6 +479,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Add ZFS repo and update the software database
   ```
   su
+  ```
+  ```
   curl -L https://archzfs.com/archzfs.gpg |  pacman-key -a -
   pacman-key --lsign-key $(curl -L https://git.io/JsfVS)
   curl -L https://git.io/Jsfw2 > /etc/pacman.d/mirrorlist-archzfs
@@ -496,6 +498,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Activate the multilib repository
   ```
   su
+  ```
+  ```
   cat >> /etc/pacman.conf << EOF
 
   [multilib]
