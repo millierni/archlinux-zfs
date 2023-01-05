@@ -493,6 +493,15 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   exit
   sudo pacman -Syy
   ```
+- Activate the multilib repository
+  ```
+  cat >> /etc/pacman.conf << EOF
+
+  [multilib]
+  Include = /etc/pacman.d/mirrorlist
+  EOF
+  sudo pacman -Syy
+  ```
 - Install optional packages
   ```
   sudo pacman -S neofetch wget htop git fish
