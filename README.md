@@ -492,8 +492,9 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [archzfs]
   Include = /etc/pacman.d/mirrorlist-archzfs
   EOF
-  sleep 1
   exit
+  ```
+  ```
   sudo pacman -Syy
   ```
 - Activate the multilib repository
@@ -506,8 +507,9 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [multilib]
   Include = /etc/pacman.d/mirrorlist
   EOF
-  sleep 1
   exit
+  ```
+  ```
   sudo pacman -Syy
   ```
 - Install optional packages
