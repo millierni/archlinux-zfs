@@ -240,6 +240,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   # call it whatever you want
   HOSTNAME=littlepony
+  ```
+  ```
   echo $HOSTNAME > /etc/hostname
   cat >> /etc/hosts << EOF
   127.0.0.1       localhost
@@ -257,6 +259,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Add a user
   ```
   USER=magicunicorn
+  ```
+  ```
   useradd -m $USER
   passwd $USER
   cat >> /etc/sudoers << EOF
