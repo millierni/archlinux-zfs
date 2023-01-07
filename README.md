@@ -247,7 +247,14 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   127.0.1.1       $HOSTNAME
   EOF
   ```
-  -Add a user
+- Install packages:
+  ```
+  pacman -S --noconfirm ntp base-devel nano networkmanager dhcpcd iwd
+  systemctl enable systemd-timesyncd
+  systemctl enable ntpd
+  systemctl enable dhcpcd NetworkManager
+  ```
+- Add a user
   ```
   USER=magicunicorn
   useradd -m $USER
@@ -259,14 +266,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ##
   $USER ALL=(ALL:ALL) ALL
   EOF
-
-  ```
-- Install packages:
-  ```
-  pacman -S --noconfirm ntp base-devel nano networkmanager dhcpcd iwd
-  systemctl enable systemd-timesyncd
-  systemctl enable ntpd
-  systemctl enable dhcpcd NetworkManager
   ```
 - make initramfs:
   ```
