@@ -477,7 +477,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   - KDE Plasma desktop
   ```
   pacman -Sy xorg plasma kde-applications plasma-wayland-session sddm
-  sleep 1
   systemctl enable sddm
   ```
   - Reboot the OS
