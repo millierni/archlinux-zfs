@@ -425,6 +425,11 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   boot
   ```
+- if reboot into rootfs
+  ```
+  zpool import rpool -R /new_root
+  exit
+  ```
 - after reboot, login as *root*
   - Import all the pools that are not listed with `zpool -list`
   ```
