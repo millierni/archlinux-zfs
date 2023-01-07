@@ -521,10 +521,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Install packages (optional)
   ```
-  sudo pacman -S neofetch wget htop git sqlitebrowser nmap cups
+  sudo pacman -S neofetch wget htop git sqlitebrowser nmap
   sudo pacman -S steam firefox  # Do not launch firefox!
-  sleep 1
-  sudo systemctl enable cups.service
   sleep 1
   sudo git clone https://aur.archlinux.org/yay.git
   sudo chown -R $USER:$USER yay
@@ -547,4 +545,11 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Install Unreal Engine 5 (optional)
   ```
   https://www.unrealengine.com/en-US/linux
+  ```
+- Install drivers and add printer
+  ```
+  sudo pacman -S cups
+  sudo systemctl enable cups.service
+  # add a printer with the name xerox at the address 10.0.0.20
+  sudo lpadmin -p xerox -E -v ipp://10.0.0.20/ipp/print -m everywhere 
   ```
