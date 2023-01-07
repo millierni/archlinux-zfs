@@ -135,7 +135,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   rm -rf /mnt
   mkdir -p /mnt
-  zfs create -o mountpoint=/     $RPOOL/ROOT/os
+  zfs create -o mountpoint=/     $RPOOL/ROOT/archlinux
   zfs create -o mountpoint=none  $RPOOL/data
   zfs create -o mountpoint=/home $RPOOL/data/home
   zfs create -o mountpoint=/root $RPOOL/data/home/root
@@ -149,7 +149,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   zfs unmount -a # unmount all zfs filesystems
   zfs set mountpoint=/boot $BPOOL/BOOT/default
-  zfs set mountpoint=/     $RPOOL/ROOT/os
+  zfs set mountpoint=/     $RPOOL/ROOT/archlinux
   zfs set mountpoint=/home $RPOOL/data/home
   zfs set mountpoint=/root $RPOOL/data/home/root
   zfs set mountpoint=/var/cache/pacman $RPOOL/data/paccache
@@ -411,7 +411,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   - Load linux kernel
   ```
-  linux /BOOT/default/@/vmlinuz-linux root=ZFS=rpool/ROOT/os boot=ZFS=bpool/BOOT/default rw
+  linux /BOOT/default/@/vmlinuz-linux root=ZFS=rpool/ROOT/archlinux boot=ZFS=bpool/BOOT/default rw
   ```
   - Load the filesystem image for booting the kernel
   ```
