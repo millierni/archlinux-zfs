@@ -277,7 +277,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - set root password:
   ```
-  echo "root:abc" | chpasswd # change root password to `abc`
+  echo "root:1234" | chpasswd # you need to change root password with your password
   grep root /etc/shadow # should show: root:$6$.....
   ```
 - add 3 EFI partitions to `/etc/fstab`
