@@ -411,7 +411,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - if reboot into GRUB
   - Set root partition
   ```
-  set root=(hd0,gpt2) # ls to search for the root partition
+  set root=(hd1,gpt2) # ls to search for the root partition
   ```
   - Load linux kernel
   ```
