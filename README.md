@@ -524,6 +524,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sudo pacman -S neofetch wget htop git sqlitebrowser nmap cups
   sudo pacman -S steam firefox  # Do not launch firefox!
   sleep 1
+  sudo systemctl enable cups.service
+  sleep 1
   sudo git clone https://aur.archlinux.org/yay.git
   sudo chown -R $USER:$USER yay
   cd yay
