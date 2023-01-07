@@ -521,7 +521,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Install packages (optional)
   ```
-  sudo pacman -S neofetch wget htop git sqlitebrowser nmap
+  sudo pacman -S neofetch wget htop git sqlitebrowser nmap cups
   sudo pacman -S steam firefox  # Do not launch firefox!
   sleep 1
   sudo git clone https://aur.archlinux.org/yay.git
