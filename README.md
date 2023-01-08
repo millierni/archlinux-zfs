@@ -463,17 +463,17 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
   - Install graphics drivers
     - AMD
-    ```
-    pacman -S xf86-video-amdgpu mesa
-    ```
+      ```
+      pacman -S xf86-video-amdgpu mesa
+      ```
     - NVIDIA
-    ```
-    pacman -S nvidia nvidia-utils
-    ```
+      ```
+      pacman -S nvidia nvidia-utils
+      ```
     - Intel
-    ```
-    pacman -S xf86-video-intel mesa
-    ```
+      ```
+      pacman -S xf86-video-intel mesa
+      ```
   - KDE Plasma desktop
   ```
   pacman -Sy xorg plasma kde-applications plasma-wayland-session sddm
@@ -541,8 +541,57 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Install KVM, QEMU, Virt Manager (optional)
   ```
-  https://computingforgeeks.com/install-kvm-qemu-virt-manager-arch-manjar/
+  sudo pacman -S qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat
+  sudo pacman -S ebtables iptables
   ```
+  - Start KVM libvirt daemon service
+    ```
+    sudo systemctl enable libvirtd.service
+    sudo systemctl start libvirtd.service
+    ```
+  - Verify that it's running
+    ```
+    systemctl status libvirtd.service
+    ```
+  - Edit `libvirtd.conf` and uncomment `unix_sock_group` and `unix_sock_rw_perms`
+    ```
+    sudo nano /etc/libvirt/libvirtd.conf
+    ```
+    ```
+    #unix_sock_group = "libvirt"
+    unix_sock_group = "libvirt"
+    ```
+    ```
+    #unix_sock_rw_perms = "0770"
+    unix_sock_rw_perms = "0770"
+    ```
+  - Add your user to libvirt group
+    ```
+    sudo usermod -a -G libvirt $(whoami)
+    newgrp libvirt
+    ```
+  - Restart libvirt deamon
+    ```
+    sudo systemctl restart libvirtd.service
+    ```
+  - Enable Nested Virtualization feature  
+    - AMD CPU
+      ```
+      sudo modprobe -r kvm_amd
+      sudo modprobe kvm_amd nested=1
+      echo "options kvm-amd nested=1" | sudo tee /etc/modprobe.d/kvm-amd.conf
+      systool -m kvm_amd -v | grep nested   # verify that Nested Virtualization is enable
+      cat /sys/module/kvm_amd/parameters/nested   # verify that Nested Virtualization is enable
+      ```
+    - Intel CPU
+      ```
+      sudo modprobe -r kvm_intel
+      sudo modprobe kvm_intel nested=1
+      echo "options kvm-intel nested=1" | sudo tee /etc/modprobe.d/kvm-intel.conf
+      systool -m kvm_intel -v | grep nested   # verify that Nested Virtualization is enable
+      cat /sys/module/kvm_intel/parameters/nested   # verify that Nested Virtualization is enable
+      ```
+
 - Create a new Virtual Machine
   [Link to the repository](https://github.com/millierni/vm-new-virtual-machine)
   - Virtual Machine - GPU Passthrough
