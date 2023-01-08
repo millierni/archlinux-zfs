@@ -543,6 +543,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   https://computingforgeeks.com/install-kvm-qemu-virt-manager-arch-manjar/
   ```
+- Virutal Machine - GPU passthrough
+  [Link to the repository](https://github.com/millierni/vm-gpu-passthrough)
 - Install Unreal Engine 5 (optional)
   ```
   https://www.unrealengine.com/en-US/linux
