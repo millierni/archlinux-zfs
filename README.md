@@ -598,6 +598,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     [Link to the repository](https://github.com/millierni/vm-gpu-passthrough)
   - Virtual Machine - Keyboard & Mouse Passthrough
     [Link to the repository](https://github.com/millierni/vm-keyboard-mouse-passthrough)
+  - Virtual Machine - Audio Passthrough
+    [Link to the repository](https://github.com/millierni/vm-audio-passthrough)
 - Install Unreal Engine 5 (optional)
   ```
   https://www.unrealengine.com/en-US/linux
