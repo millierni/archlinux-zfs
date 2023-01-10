@@ -539,6 +539,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   https://www.unixsheikh.com/articles/choose-your-browser-carefully.html
   https://www.youtube.com/watch?v=GVOcElOPs8E
   ```
+- Install drivers and add printer (optional)
+  ```
+  sudo pacman -S cups
+  sudo systemctl enable cups.service
+  # add a printer with the name xerox at the address 10.0.0.20
+  sudo lpadmin -p xerox -E -v ipp://10.0.0.20/ipp/print -m everywhere 
+  ```
 - Install KVM, QEMU, Virt Manager (optional)
   ```
   sudo pacman -S qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat
@@ -591,7 +598,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       systool -m kvm_intel -v | grep nested   # verify that Nested Virtualization is enable
       cat /sys/module/kvm_intel/parameters/nested   # verify that Nested Virtualization is enable
       ```
-
 - Create a new Virtual Machine (optional)
   [Link to the repository](https://github.com/millierni/vm-new-virtual-machine)
   - Virtual Machine - GPU Passthrough
@@ -603,11 +609,4 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Install Unreal Engine 5 (optional)
   ```
   https://www.unrealengine.com/en-US/linux
-  ```
-- Install drivers and add printer (optional)
-  ```
-  sudo pacman -S cups
-  sudo systemctl enable cups.service
-  # add a printer with the name xerox at the address 10.0.0.20
-  sudo lpadmin -p xerox -E -v ipp://10.0.0.20/ipp/print -m everywhere 
   ```
