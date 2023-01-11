@@ -533,6 +533,33 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sleep 1
   yay -S vscodium-bin
   ```
+- Setup Git
+  - Configure Git  
+    Replace the `name` and `email` with your name and email
+    ```
+    git config --global user.name "Magic Unicorn"
+    git config --global user.email magic@unicorn.com
+    ```
+  - Generating a new SSH key
+    ```
+    ssh-keygen -t ed25519 -C "magic@unicorn.com" 
+    ```
+  - Start the `ssh-agent` in the background
+    ```
+    eval "$(ssh-agent -s)"
+    ```
+  - Add your SSH private key to the `ssh-agent`
+    ```
+    ssh-add ~/.ssh/{ssh_key_name}
+    ```
+  - Read and copy the public key
+    ```
+    cat ~/.ssh/{ssh_key_name}.pub
+    ```
+  - Add the public key to your Github account
+    ```
+    https://github.com/settings/keys
+    ```
 - Tweak Firefox for privacy (optional)
   ```
   https://github.com/arkenfox/user.js
