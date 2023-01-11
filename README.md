@@ -563,10 +563,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     nano ~/.ssh/config
     ```
   - Add this to the `config` file  
-    Replace `{username}` by your username and `{ssh_key}` by your SSH key name
+    Replace `{magicunicorn}` by your github username and `{ssh_key}` by your SSH key name
     ```
     Host github.com
-    User {username}
+    User {magicunicorn}
     PreferredAuthentications publickey
     IdentityFile ~/.ssh/{ssh_key}
     IdentitiesOnly yes
@@ -575,23 +575,18 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     ```
     chmod 600 ~/.ssh/config
     ```
-  - Start the `ssh-agent` in the background
-    ```
-    eval "$(ssh-agent -s)"
-    ```
-  - Add your SSH private key to the `ssh-agent`  
-    Replace `{ssh_key}` by your SSH key name
-    ```
-    ssh-add ~/.ssh/{ssh_key}
-    ```
-  - Read and copy the public key  
+  - Read and copy the `public key`  
     Replace `{ssh_key}` by your SSH key name
     ```
     cat ~/.ssh/{ssh_key}.pub
     ```
-  - Add the public key to your Github account
+  - Add the `public key` to your `Github account`
     ```
     https://github.com/settings/keys
+    ```
+  - Etablish a SSH connection
+    ```
+    ssh -T git@github.com
     ```
 - Tweak Firefox for privacy (optional)
   ```
