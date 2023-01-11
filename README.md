@@ -540,6 +540,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     git config --global user.name "Magic Unicorn"
     git config --global user.email magic@unicorn.com
     ```
+  - Create the `.shh` directory
+    ```
+    sudo mkdir -p ~/.ssh
+    ```
   - Generating a new SSH key
     ```
     ssh-keygen -t ed25519 -C "magic@unicorn.com" 
