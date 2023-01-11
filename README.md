@@ -544,8 +544,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     ```
     sudo mkdir -p ~/.ssh
     ```
-  - Verify that you have the permission on the `.ssh` directory  
-    Use `ls -a -l` to see the permission
+  - Verify that you have the permissions on the `.ssh` directory  
+    Use `ls -a -l` to see the permissions
     ```
     sudo chown -R $USER:$USER ~/.ssh
     ```
@@ -553,17 +553,41 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     ```
     ssh-keygen -t ed25519 -C "magic@unicorn.com" 
     ```
+  - Change the permissions on the SSH key  
+    Replace `{ssh_key}` by your SSH key name
+    ```
+    chmod 400 ~/.ssh/{ssh_key}
+    ```
+  - Create a `config` file 
+    ```
+    nano ~/.ssh/config
+    ```
+  - Add this to the `config` file  
+    Replace `{username}` by your username and `{ssh_key}` by your SSH key name
+    ```
+    Host github.com
+    User {username}
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/{ssh_key}
+    IdentitiesOnly yes
+    ```
+  - Change the permissions on the `config` file
+    ```
+    chmod 600 ~/.ssh/config
+    ```
   - Start the `ssh-agent` in the background
     ```
     eval "$(ssh-agent -s)"
     ```
-  - Add your SSH private key to the `ssh-agent`
+  - Add your SSH private key to the `ssh-agent`  
+    Replace `{ssh_key}` by your SSH key name
     ```
-    ssh-add ~/.ssh/{ssh_key_name}
+    ssh-add ~/.ssh/{ssh_key}
     ```
-  - Read and copy the public key
+  - Read and copy the public key  
+    Replace `{ssh_key}` by your SSH key name
     ```
-    cat ~/.ssh/{ssh_key_name}.pub
+    cat ~/.ssh/{ssh_key}.pub
     ```
   - Add the public key to your Github account
     ```
