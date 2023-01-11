@@ -544,6 +544,11 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     ```
     sudo mkdir -p ~/.ssh
     ```
+  - Verify that you have the permission on the `.ssh` directory  
+    Use `ls -a -l` to see the permission
+    ```
+    sudo chown -R $USER:$USER ~/.ssh
+    ```
   - Generating a new SSH key
     ```
     ssh-keygen -t ed25519 -C "magic@unicorn.com" 
