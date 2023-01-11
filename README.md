@@ -68,7 +68,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   sgdisk --zap-all $DISK1
   sgdisk --zap-all $DISK2
   ```
-- create UEFI partition for booting:
+- Create UEFI partition for booting
   ```
   sgdisk -n1:1M:+512M -t1:EF00 $DISK0
   sgdisk -n1:1M:+512M -t1:EF00 $DISK1
@@ -78,21 +78,22 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   mkfs.fat -F 32 -n EFI ${DISK1}-part1
   mkfs.fat -F 32 -n EFI ${DISK2}-part1
   ```
-- create ZFS partitions for boot:
+- Create ZFS partitions for boot
   ```
   sgdisk -n2:0:+20G -t2:BF00 $DISK0
   sgdisk -n2:0:+20G -t2:BF00 $DISK1
   sgdisk -n2:0:+20G -t2:BF00 $DISK2
   sleep 1
   ```
-- create ZFS partitions for root:
+- Create ZFS partitions for root
   ```
   sgdisk -n3:0:0 -t3:BF00 $DISK0
   sgdisk -n3:0:0 -t3:BF00 $DISK1
   sgdisk -n3:0:0 -t3:BF00 $DISK2
   sleep 1
   ```
-- create boot pool (bpool) with features incompatible for grub disabled. (see step [2.4](https://github.com/openzfs/zfs/wiki/Debian-Buster-Root-on-ZFS#step-2-disk-formatting)) for parameters compatible with GRUB:
+- Create boot pool (bpool) with features incompatible for grub disabled  
+  see step [2.4](https://github.com/openzfs/zfs/wiki/Debian-Buster-Root-on-ZFS#step-2-disk-formatting) for parameters compatible with GRUB
   ```
   BPOOL=bpool
   zpool create -o ashift=12 -d \
@@ -117,7 +118,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     -O normalization=formD -O relatime=on -O xattr=sa \
     -O mountpoint=none -R /mnt -f $BPOOL raidz1 ${DISK0}-part2 ${DISK1}-part2 ${DISK2}-part2
   ```
-- create root pool (use `ashift=13` for Enterprise SSD):
+- Create root pool (use `ashift=13` for Enterprise SSD)
   ```
   RPOOL=rpool
   zpool create -o ashift=12 \
@@ -126,12 +127,12 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     -O mountpoint=none -R /mnt \
     -f $RPOOL raidz1 ${DISK0}-part3 ${DISK1}-part3 ${DISK2}-part3
   ```
-- create containers for $RPOOL and $BPOOL
+- Create containers for $RPOOL and $BPOOL
   ```
   zfs create -o mountpoint=none $BPOOL/BOOT
   zfs create -o mountpoint=none  $RPOOL/ROOT
   ```
-- create datasets for $RPOOL:
+- Create datasets for $RPOOL
   ```
   rm -rf /mnt
   mkdir -p /mnt
@@ -141,11 +142,11 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   zfs create -o mountpoint=/root $RPOOL/data/home/root
   zfs create -o mountpoint=/var/cache/pacman $RPOOL/data/paccache
   ```
-- create datasets for $BPOOL:
+- Create datasets for $BPOOL
   ```
   zfs create -o mountpoint=/boot $BPOOL/BOOT/default
   ```
-- unmount all filesystems and set new mountpoints:
+- Unmount all filesystems and set new mountpoints
   ```
   zfs unmount -a # unmount all zfs filesystems
   zfs set mountpoint=/boot $BPOOL/BOOT/default
@@ -154,34 +155,34 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   zfs set mountpoint=/root $RPOOL/data/home/root
   zfs set mountpoint=/var/cache/pacman $RPOOL/data/paccache
   ```
-- Export pools:
+- Export pools
   ```
   zpool export $BPOOL
   zpool export $RPOOL
   ```
-- Re-import pools:
+- Re-import pools
   ```
   rm -rf /mnt
   zpool import -d /dev/disk/by-id -R /mnt $RPOOL
   zpool import -d /dev/disk/by-id -R /mnt $BPOOL
   ```
-- Disable cache files:
+- Disable cache files
   ```
   zpool set cachefile=none $BPOOL
   zpool set cachefile=none $RPOOL
   ```
-- make efi mount points and mount them:
+- Make efi mount points and mount them
   ```
   mkdir -p /mnt/{efi0,efi1,efi2}
   mount -t vfat ${DISK0}-part1 /mnt/efi0
   mount -t vfat ${DISK1}-part1 /mnt/efi1
   mount -t vfat ${DISK2}-part1 /mnt/efi2
   ```
-- double check work:
+- Double check mounting points
   ```
-  findmnt | grep /mnt # shows mount points
+  findmnt | grep /mnt
   ```
-- use `pacstrap` to install base set of packages into `/mnt`
+- Use `pacstrap` to install base set of packages into `/mnt`
   ```
   pacstrap /mnt base vi mandoc grub efibootmgr mkinitcpio
   CompatibleVer=$(pacman -Si zfs-linux | grep 'Depends On' | sed "s|.*linux=||" | awk '{ print $1 }')
@@ -189,16 +190,16 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   pacstrap /mnt zfs-linux zfs-utils
   pacstrap /mnt linux-firmware intel-ucode amd-ucode
   ```
-- edit `/mnt/etc/mkinitcpio.conf` and change `HOOKS` line to be: `HOOKS=(base udev autodetect modconf block keyboard zfs filesystems)`
+- Edit `/mnt/etc/mkinitcpio.conf` and change `HOOKS` line to be: `HOOKS=(base udev autodetect modconf block keyboard zfs filesystems)`
   ```
   sed -i.bak -E 's/^(HOOKS=.*)$/#\1\nHOOKS=\(base udev autodetect modconf block keyboard zfs filesystems\)/g' /mnt/etc/mkinitcpio.conf
   cat /mnt/etc/mkinitcpio.conf # verify it
   ```
-- copy `/etc/fstab` to new installation:
+- Copy `/etc/fstab` to new installation
   ```
   genfstab -U /mnt >> /mnt/etc/fstab  # generate new fstab
   ```
-- save the variables for use later (optional):
+- Save the variables for use later (optional)
   ```
   cat > /mnt/root/vars.sh << EOF
   DISK0=$DISK0
@@ -212,22 +213,22 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   systemctl daemon-reload
   ```
-- chroot into new installation
+- Chroot into new installation
   ```
   arch-chroot /mnt /usr/bin/env DISK0=$DISK0 DISK1=$DISK1 DISK2=$DISK2 RPOOL=$RPOOL BPOOL=$BPOOL /bin/bash
   ```
-- set timezone:
+- Set timezone
   ```
   rm -rf /etc/localtime
   ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
   hwclock --systohc --utc # generate /etc/adjtime and set HW RTC to UTC
   ```
-- generate locales:
+- Generate locales
   ```
   sed -iE 's/^#en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen  # uncomment en_US.UTF-8
   locale-gen
   ```
-- [set locale systemwide](https://wiki.artixlinux.org/Main/Installation#Localization):
+- [Set locale systemwide](https://wiki.artixlinux.org/Main/Installation#Localization)
   ```
   export LANG=en_US.UTF-8
   export LC_COLLATE=C
@@ -236,10 +237,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   LC_COLLATE=$LC_COLLATE
   EOF
   ```
-- set hostname and edit `/etc/hosts` file:
+- Set hostname and edit `/etc/hosts` file  
+  Change `{littlepony}` with your hostname
   ```
-  # call it whatever you want
-  HOSTNAME=littlepony
+  HOSTNAME={littlepony}
   ```
   ```
   echo $HOSTNAME > /etc/hostname
@@ -249,16 +250,17 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   127.0.1.1       $HOSTNAME
   EOF
   ```
-- Install packages:
+- Install packages
   ```
   pacman -S --noconfirm ntp base-devel nano networkmanager dhcpcd iwd
   systemctl enable systemd-timesyncd
   systemctl enable ntpd
   systemctl enable dhcpcd NetworkManager
   ```
-- Add a user
+- Add a user  
+  Change `{magicunicorn}` with your username
   ```
-  USER=magicunicorn
+  USER={magicunicorn}
   ```
   ```
   useradd -m $USER
@@ -271,16 +273,16 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   $USER ALL=(ALL:ALL) ALL
   EOF
   ```
-- make initramfs:
+- Make initramfs
   ```
   mkinitcpio -P
   ```
-- set root password:
+- Set root password
   ```
   echo "root:1234" | chpasswd # you need to change root password with your password
   grep root /etc/shadow # should show: root:$6$.....
   ```
-- add 3 EFI partitions to `/etc/fstab`
+- Add 3 EFI partitions to `/etc/fstab`
   ```
   # comment everything on /etc/fstab
   sed -i -E 's/^([^#].*)$/# \1/g' /etc/fstab
@@ -292,15 +294,16 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   echo PARTUUID=$(blkid -s PARTUUID -o value ${DISK2}-part1) \
     /efi2 vfat nofail,x-systemd.device-timeout=1 0 1 >> /etc/fstab
   ```
-- install grub
+- Install grub
   ```
   pacman -S --noconfirm grub efibootmgr
   ```
-- create `/etc/default/grub`
+- Create `/etc/default/grub`
   ```
   ZPOOL_VDEV_NAME_PATH=1 grub-probe /boot # should return "zfs"
   ```
-- Modify `/etc/default/grub` - add `zfs=rpool`: ref \[ [grub-error-sparse-file-not-allowed-fix](https://forum.manjaro.org/t/solved-grub-btrfs-error-sparse-file-not-allowed/70031) \]
+- Modify `/etc/default/grub`  
+  Add `zfs=rpool`: ref \[ [grub-error-sparse-file-not-allowed-fix](https://forum.manjaro.org/t/solved-grub-btrfs-error-sparse-file-not-allowed/70031) \]
   ```
   [[ -f /etc/default/grub.original ]] && cp /etc/default/grub.original /etc/default/grub
   cp /etc/default/grub /etc/default/grub.original
@@ -343,20 +346,20 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   efibootmgr -c -g -d $DISK1 -p 1 -L "GRUB-1" -l '\EFI\GRUB\grubx64.efi'
   efibootmgr -c -g -d $DISK2 -p 1 -L "GRUB-2" -l '\EFI\GRUB\grubx64.efi'
   ```
-- double check `/etc/grub/grub.cfg` according to [this](https://wiki.archlinux.org/index.php/Install_Arch_Linux_on_ZFS#Booting_your_kernel_and_initrd_from_ZFS
-- start sshd and enable root login (add `PermitRootLogin yes` to `/etc/ssh/sshd_config`):
+- Double check `/etc/grub/grub.cfg` according to [this](https://wiki.archlinux.org/index.php/Install_Arch_Linux_on_ZFS#Booting_your_kernel_and_initrd_from_ZFS
+- Start sshd and enable root login (add `PermitRootLogin yes` to `/etc/ssh/sshd_config`)
   ```
   pacman -S --noconfirm openssh
   sed -i -E 's/^(#PermitRootLogin.*)$/PermitRootLogin yes\n\1/g' /etc/ssh/sshd_config
   systemctl enable sshd
   ```
-- enable `zfs-import-cache.service`
+- Enable `zfs-import-cache.service`
   ```
   zpool set cachefile=/etc/zfs/zpool.cache $BPOOL 
   zpool set cachefile=/etc/zfs/zpool.cache $RPOOL
   systemctl enable zfs-import-cache.service
   ```
-- add aliases and prompt to `/etc/skel/.bashrc`:
+- Add aliases and prompt to `/etc/skel/.bashrc`
   ```
   cat >> /etc/skel/.bashrc << EOF
   
@@ -374,12 +377,12 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   alias ls='ls --color=auto'
   EOF
   ```
-- copy this `.bash_profile` and `.bashrc` to root:
+- Copy this `.bash_profile` and `.bashrc` to root
   ```
   [[ ! -f /root/.bash_profile ]] && cp /etc/skel/.bash_profile /root
   [[ ! -f /root/.bashrc ]]       && cp /etc/skel/.bashrc       /root
   ```
-- save installation environment variables:
+- Save installation environment variables
   ```
   cat > ~/vars.sh << EOF
   # installation environment
@@ -394,21 +397,21 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   exit
   ```
-- unmount filesystem
+- Unmount filesystem
   ```
   umount -R /mnt
   zfs umount -a
   ```
-- export them:
+- Export `bpool` and `rpool`
   ```
-  zpool export $RPOOL
   zpool export $BPOOL
+  zpool export $RPOOL
   ```
-- remove live media and prepare to reboot
+- Remove live media and prepare to reboot
   ```
   reboot
   ```
-- if reboot into GRUB
+- If reboot into GRUB
   - Set root partition
   ```
   set root=(hd1,gpt2) # ls to search for the root partition
@@ -429,12 +432,12 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   boot
   ```
-- if reboot into rootfs
+- If reboot into rootfs
   ```
   zpool import rpool -R /new_root
   exit
   ```
-- after reboot, login as *root*
+- After reboot, login as *root*
   - Import all the pools that are not listed with `zpool -list`
   ```
   zpool import -d /dev/disk/by-id -f bpool
@@ -456,10 +459,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   grub-mkconfig -o /boot/grub/grub.cfg
   reboot  # reboot the OS
   ```
-> - edit `/etc/pacman.conf` and scroll to `#IgnorePkg` and add:
->   ```
->   IgnorePkg = linux54-zfs  # so this package won't be updated
->   ```
 - Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
   - Install graphics drivers
     - AMD
