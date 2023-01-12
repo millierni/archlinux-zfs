@@ -518,4 +518,19 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo pacman -Syy
   ```
+- Automate and schedule `ZFS scrub` on the pools
+  ```
+  sudo systemctl start cronie
+  sudo systemctl status cronie
+  ```
+  ```
+  EDITOR=nano crontab -e
+  ```
+  ```
+  MAILTO=magic@unicorn.com
+  # zpool scrub every monday
+  0 20 * * 1 /sbin/zpool scrub bpool
+  0 20 * * 1 /sbin/zpool scrub rpool
+  0 8 * * 2 /sbin/zpool status
+  ```
 - [Install packages](https://github.com/millierni/archlinux-packages)
