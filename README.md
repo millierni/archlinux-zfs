@@ -518,19 +518,53 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo pacman -Syy
   ```
-- Automate and schedule `ZFS scrub` on the pools
-  ```
-  sudo systemctl start cronie
-  sudo systemctl status cronie
-  ```
-  ```
-  EDITOR=nano crontab -e
-  ```
-  ```
-  MAILTO=magic@unicorn.com
-  # zpool scrub every monday
-  0 20 * * 1 /sbin/zpool scrub bpool
-  0 20 * * 1 /sbin/zpool scrub rpool
-  0 8 * * 2 /sbin/zpool status
-  ```
+- Automate and schedule `ZFS scrub` on the pools and email any output
+  - Create a gmail account, enable `2-Step verification`, create an [app passwords](https://myaccount.google.com/apppasswords)
+  - Install `msmtp-mta`
+    ```
+    sudo pacman -S msmtp-mta
+    ```
+  - Create `msmtprc`
+    ```
+    sudo nano /etc/msmtprc
+    ```
+    - Add this to `msmtprc`  
+      Replace the value of `user` and `from` with your gmail address  
+      Replace `{gmail_app_password}` with your app password
+      ```
+      account default
+      tls on
+      auth on
+      host smtp.gmail.com
+      port 587
+      user bot.magic.unicorn@gmail.com
+      from bot.magic.unicorn@gmail.com
+      password {gmail_app_password}
+      ```
+  - Change the permissions on `msmtprc`
+    ```
+    sudo chmod 600 /etc/msmtprc
+    sudo chown $USER:$USER /etc/msmtprc
+    ```
+  - Try if it works  
+    Replace the email with your email address
+    ```
+    echo "test" | msmtp magic@unicorn.com
+    ```
+  - Start cronie deamon
+    ```
+    sudo systemctl start cronie
+    ```
+  - Edit `crontab`
+    ```
+    EDITOR=nano crontab -e
+    ```
+    - Add this
+    ```
+    MAILTO=magic@unicorn.com
+    # zpool scrub every Monday 8 PM and send an email every Tuesday 8 AM 
+    0 20 * * 1 /sbin/zpool scrub bpool
+    0 20 * * 1 /sbin/zpool scrub rpool
+    0 8 * * 2 /sbin/zpool status
+    ```
 - [Install packages](https://github.com/millierni/archlinux-packages)
