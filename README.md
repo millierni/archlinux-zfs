@@ -567,4 +567,36 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     0 20 * * 1 /sbin/zpool scrub rpool
     0 8 * * 2 /sbin/zpool status
     ```
+- Create an alias to modify the `pacman command`
+  - Create `.pacman-zfs-snapshot.sh`
+    ```
+    sudo nano /etc/.pacman-zfs-snapshot.sh
+    ```
+    - Add this to `.pacman-zfs-snapshot.sh`
+      ```
+      #!/bin/bash
+
+      if [[ "$@" == *"u"* ]];
+      then
+        # Create snapshots before the update
+        zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
+        echo "ZFS: snapshot of rpool/ROOT/archlinux created"
+        zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
+        echo "ZFS: snapshot of rpool/data created"
+        zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`
+        echo "ZFS: snapshot of rpool/data/home created"
+        zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
+        echo "ZFS: snapshot of rpool/data/home/root created"
+        zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
+        echo "ZFS: snapshot of bpool/BOOT/default created"
+        sudo pacman $@ --ignore zfs-linux,linux
+      else
+        sudo pacman $@
+      fi
+      ```
+  - Add alias to `/etc/bash.bashrc`
+    ```
+    echo "alias sudo='sudo '" | sudo tee -a /etc/bash.bashrc
+    echo "alias pacman='~/.pacman-zfs-snapshot.sh'" | sudo tee -a /etc/bash.bashrc
+    ```
 - [Install packages](https://github.com/millierni/archlinux-packages)
