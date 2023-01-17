@@ -594,9 +594,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
         sudo pacman $@
       fi
       ```
+  - Change the permissions on `.pacman-zfs-snapshot.sh`
+    ```
+    sudo chmod +x /etc/.pacman-zfs-snapshot.sh
+    ```
   - Add alias to `/etc/bash.bashrc`
     ```
     echo "alias sudo='sudo '" | sudo tee -a /etc/bash.bashrc
-    echo "alias pacman='~/.pacman-zfs-snapshot.sh'" | sudo tee -a /etc/bash.bashrc
+    echo "alias pacman='/etc/.pacman-zfs-snapshot.sh'" | sudo tee -a /etc/bash.bashrc
     ```
 - [Install packages](https://github.com/millierni/archlinux-packages)
