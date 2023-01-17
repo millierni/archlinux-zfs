@@ -580,15 +580,17 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       then
         # Create snapshots before the update
         zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
-        echo "ZFS: snapshot of rpool/ROOT/archlinux created"
+        echo "ZFS: snapshot of rpool/ROOT/archlinux   [created]"
         zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
-        echo "ZFS: snapshot of rpool/data created"
+        echo "ZFS: snapshot of rpool/data             [created]"
         zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`
-        echo "ZFS: snapshot of rpool/data/home created"
+        echo "ZFS: snapshot of rpool/data/home        [created]"
         zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
-        echo "ZFS: snapshot of rpool/data/home/root created"
+        echo "ZFS: snapshot of rpool/data/home/root   [created]"
         zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
-        echo "ZFS: snapshot of bpool/BOOT/default created"
+        echo "ZFS: snapshot of bpool/BOOT/default     [created]"
+        
+        # Proceed with the command and ignore zfs-linux, linux
         sudo pacman $@ --ignore zfs-linux,linux
       else
         sudo pacman $@
