@@ -620,7 +620,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
         if [[ $answer =~ ^[Yy]$ ]];
         then
           sudo pacman -S linux=linuxCompatibleVersion zfs-linux=zfsLinux_availableVersion
-        elif [[ $answer =~ ^[Nn]$ ]]; then
+        elif [[ $answer =~ ^[Nn]$ ]];
+        then
           exit
         else  
           echo "Please answer Y (yes) or N (no)."
