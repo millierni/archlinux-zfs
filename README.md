@@ -604,7 +604,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       then
         linuxCompatibleVersion=$(pacman -Si zfs-linux | grep -oP "(?<= linux=)[^\s]+")
         currentLinuxVersion=$(uname -r)
-        if [[ currentLinuxVersion != linuxCompatibleVersion ]];
+        if [[ "$currentLinuxVersion" != "$linuxCompatibleVersion" ]];
           updateLinuxKernel=true
         else
           updateLinuxKernel=false
