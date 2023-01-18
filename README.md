@@ -320,8 +320,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   # this gets rid of "sparse file not supported" error when GRUB boots
   sed -i -E 's/^#?(GRUB_SAVEDEFAULT=.*)$/GRUB_SAVEDEFAULT=false\n#\1/g' /etc/default/grub
   
-  # add GRUB_RECORDFAIL_TIMEOUT=5
-  sed -i -E 's/(^GRUB_TIMEOUT=)[0-9]+$/\15\nGRUB_RECORDFAIL_TIMEOUT=5/g' /etc/default/grub
+  # add GRUB_RECORDFAIL_TIMEOUT=2
+  sed -i -E 's/(^GRUB_TIMEOUT=)[0-9]+$/\15\nGRUB_RECORDFAIL_TIMEOUT=2/g' /etc/default/grub
   
   # remove "quiet" from GRUB_CMDLINE_LINUX_DEFAULT
   sed -i -E 's/(^GRUB_CMDLINE_LINUX_DEFAULT=")(.*)(quiet)(.*)(")/\1\2\4\5/g' /etc/default/grub
