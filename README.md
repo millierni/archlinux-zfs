@@ -605,6 +605,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
         linuxCompatibleVersion=$(pacman -Si zfs-linux | grep -oP "(?<= linux=)[^\s]+")
         currentLinuxVersion=$(uname -r)
         if [[ "$currentLinuxVersion" != "$linuxCompatibleVersion" ]];
+        then
           updateLinuxKernel=true
         else
           updateLinuxKernel=false
@@ -619,7 +620,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
         read -p "Do you want to update linux and zfs-linux? (y/n) " answer
         if [[ $answer =~ ^[Yy]$ ]];
         then
-          sudo pacman -S linux=linuxCompatibleVersion zfs-linux=zfsLinux_availableVersion
+          sudo pacman -S linux="$linuxCompatibleVersion" zfs-linux="$zfsLinux_availableVersion"
         elif [[ $answer =~ ^[Nn]$ ]];
         then
           exit
