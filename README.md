@@ -580,15 +580,15 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       if [[ "$@" == *"-Syu"* ]] || [[ "$@" == *"-Syyu"* ]];
       then
         # Create snapshots before the update
-        zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
+        sudo zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
         echo "ZFS: snapshot of rpool/ROOT/archlinux   [created]"
-        zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
+        sudo zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
         echo "ZFS: snapshot of rpool/data             [created]"
-        zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`  
+        sudo zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`  
         echo "ZFS: snapshot of rpool/data/home        [created]"   
-        zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
+        sudo zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
         echo "ZFS: snapshot of rpool/data/home/root   [created]" 
-        zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
+        sudo zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
         echo "ZFS: snapshot of bpool/BOOT/default     [created]" 
         sudo pacman $@ --ignore zfs-linux,linux
         packagesUpdated=true
