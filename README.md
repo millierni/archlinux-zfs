@@ -604,6 +604,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
           sudo pacman $@ --ignore zfs-linux,linux
           packagesUpdated=true
         else
+          echo "There is 0 package available to update..."
           sudo pacman $@ --ignore zfs-linux,linux
           packagesUpdated=true
         fi
