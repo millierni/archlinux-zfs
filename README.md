@@ -603,6 +603,9 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
           # Execute the command and ignore zfs-linux and linux
           sudo pacman $@ --ignore zfs-linux,linux
           packagesUpdated=true
+        else
+          sudo pacman $@ --ignore zfs-linux,linux
+          packagesUpdated=true
         fi
       else
         sudo pacman $@
