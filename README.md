@@ -551,8 +551,9 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     ```
     echo "test" | msmtp magic@unicorn.com
     ```
-  - Start cronie deamon
+  - Enable and start cronie deamon
     ```
+    sudo systemctl enable cronie
     sudo systemctl start cronie
     ```
   - Edit `crontab`
@@ -598,6 +599,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       fi
 
       # Verify if there is an update available for zfs-linux and search for the compatible linux kernel
+      updateLinuxKernel=false
       zfsLinux_availableVersion=$(pacman -Si zfs-linux | grep Version | awk '{print $3}')
       zfsLinux_installedVersion=$(pacman -Qi zfs-linux | grep Version | awk '{print $3}')                               
       if [[ "$zfsLinux_availableVersion" != "$zfsLinux_installedVersion" ]] && [[ "$packagesUpdated" = true ]];
@@ -607,11 +609,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
         if [[ "$currentLinuxVersion" != "$linuxCompatibleVersion" ]];
         then
           updateLinuxKernel=true
-        else
-          updateLinuxKernel=false
         fi
-      else
-        updateLinuxKernel=false
       fi  
 
       # Prompt the user for updating linux and zfs-linux to there last compatible version
