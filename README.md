@@ -503,6 +503,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [archzfs]
   Include = /etc/pacman.d/mirrorlist-archzfs
   EOF
+  ```
+  ```
   exit
   ```
   ```
@@ -518,6 +520,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [multilib]
   Include = /etc/pacman.d/mirrorlist
   EOF
+  ```
+  ```
   exit
   ```
   ```
