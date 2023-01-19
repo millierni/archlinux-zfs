@@ -442,6 +442,11 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   zpool import -d /dev/disk/by-id -f bpool
   ```
+  - Upgrade `bpool` and `rpool`
+    ```
+    zpool upgrade bpool
+    zpool upgrade rpool
+    ```
   - Enable the automatic mounting for the ZFS pools
   ```
   systemctl enable zfs-import-cache # if it's not already enabled
