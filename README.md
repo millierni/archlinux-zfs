@@ -299,10 +299,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   echo PARTUUID=$(blkid -s PARTUUID -o value ${DISK2}-part1) \
     /efi2 vfat nofail,x-systemd.device-timeout=1 0 1 >> /etc/fstab
   ```
-- Install grub
-  ```
-  pacman -S --noconfirm grub efibootmgr
-  ```
 - Create `/etc/default/grub`
   ```
   ZPOOL_VDEV_NAME_PATH=1 grub-probe /boot # should return "zfs"
