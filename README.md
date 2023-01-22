@@ -303,6 +303,34 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   ZPOOL_VDEV_NAME_PATH=1 grub-probe /boot # should return "zfs"
   ```
+- Modify `/etc/default/grub`  
+  Add `zfs=rpool`: ref \[ [grub-error-sparse-file-not-allowed-fix](https://forum.manjaro.org/t/solved-grub-btrfs-error-sparse-file-not-allowed/70031) \]
+  ```
+  [[ -f /etc/default/grub.original ]] && cp /etc/default/grub.original /etc/default/grub
+  cp /etc/default/grub /etc/default/grub.original
+  
+  # comment out GRUB_TIMEOUT_STYLE=hidden
+  sed -i -E 's/(^GRUB_TIMEOUT_STYLE=hidden)/#\1/g' /etc/default/grub
+  
+  ## add GRUB_CMDLINE_LINUX="root=ZFS=$RPOOL/ROOT/default"
+  # sed -i -E 's/(^GRUB_CMDLINE_LINUX=")/\1root=ZFS='"$RPOOL"'\/ROOT\/archlinux\/root /g' /etc/default/grub
+  # add GRUB_CMDLINE_LINUX="zfs=$RPOOL" (info from mkinitcpio -H zfs)
+  sed -i -E 's/^(GRUB_CMDLINE_LINUX=")(.*)$/\1zfs='"$RPOOL"' \2/g' /etc/default/grub
+  
+  # comment out any GRUB_SAVEDEFAULT and write GRUB_SAVEDEFAULT=false
+  # this gets rid of "sparse file not supported" error when GRUB boots
+  sed -i -E 's/^#?(GRUB_SAVEDEFAULT=.*)$/GRUB_SAVEDEFAULT=false\n#\1/g' /etc/default/grub
+  
+  # add GRUB_RECORDFAIL_TIMEOUT=2
+  sed -i -E 's/(^GRUB_TIMEOUT=)[0-9]+$/\15\nGRUB_RECORDFAIL_TIMEOUT=2/g' /etc/default/grub
+  
+  # remove "quiet" from GRUB_CMDLINE_LINUX_DEFAULT
+  sed -i -E 's/(^GRUB_CMDLINE_LINUX_DEFAULT=")(.*)(quiet)(.*)(")/\1\2\4\5/g' /etc/default/grub
+  
+  # remove spaces next to quotation marks on GRUB_CMDLINE_LINUX_DEFAULT
+  sed -i -E 's/(^GRUB_CMDLINE_LINUX_DEFAULT=")([ \t]+)(.*)(")/\1\3\4/g' /etc/default/grub
+  sed -i -E 's/(^GRUB_CMDLINE_LINUX_DEFAULT=")(.*)([ \t]+)(")/\1\2\4/g' /etc/default/grub
+  ```
 - Run grub-mkconfig and install grub
   ```
   ZPOOL_VDEV_NAME_PATH=1 grub-mkconfig -o /boot/grub/grub.cfg
