@@ -462,6 +462,23 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   reboot  # reboot the OS
   ```
+- Scrub the `rpool` and `bpool`
+  ```
+  sudo zpool scrub rpool
+  sudo zpool scrub bpool
+  ```
+  Verify that there's no error
+  ```
+  sudo zpool status -x -v
+  ```
+- Create the genesis snapshot
+  ```
+  sudo zfs snapshot rpool/ROOT/archlinux@genesis
+  sudo zfs snapshot rpool/data@genesis
+  sudo zfs snapshot rpool/data/home@genesis
+  sudo zfs snapshot rpool/data/home/root@genesis
+  sudo zfs snapshot bpool/BOOT/default@genesis
+  ```
 - Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
   - Install graphics drivers
     - AMD
@@ -529,13 +546,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo zpool status -x -v
   ```
-- Create the genesis snapshot
+- Create the base snapshot
   ```
-  sudo zfs snapshot rpool/ROOT/archlinux@genesis
-  sudo zfs snapshot rpool/data@genesis
-  sudo zfs snapshot rpool/data/home@genesis
-  sudo zfs snapshot rpool/data/home/root@genesis
-  sudo zfs snapshot bpool/BOOT/default@genesis
+  sudo zfs snapshot rpool/ROOT/archlinux@base
+  sudo zfs snapshot rpool/data@base
+  sudo zfs snapshot rpool/data/home@base
+  sudo zfs snapshot rpool/data/home/root@base
+  sudo zfs snapshot bpool/BOOT/default@base
   ```
 - Automate and schedule `ZFS scrub` on the pools and email any output
   - Create a gmail account, enable `2-Step verification`, create an [app passwords](https://myaccount.google.com/apppasswords)
