@@ -520,6 +520,23 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo pacman -Syy
   ```
+- Scrub the `rpool` and `bpool`
+  ```
+  sudo zpool scrub rpool
+  sudo zpool scrub bpool
+  ```
+  Verify that there's no error
+  ```
+  sudo zpool status -x -v
+  ```
+- Create the genesis snapshot
+  ```
+  sudo zfs snapshot rpool/ROOT/archlinux@genesis
+  sudo zfs snapshot rpool/data@genesis
+  sudo zfs snapshot rpool/data/home@genesis
+  sudo zfs snapshot rpool/data/home/root@genesis
+  sudo zfs snapshot bpool/BOOT/default@genesis
+  ```
 - Automate and schedule `ZFS scrub` on the pools and email any output
   - Create a gmail account, enable `2-Step verification`, create an [app passwords](https://myaccount.google.com/apppasswords)
   - Install `msmtp-mta`
@@ -674,18 +691,21 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo reboot
   ```
-- Scrub the `rpool` and `bpool`  
-  Verify that there's no error
+- Scrub the `rpool` and `bpool`
   ```
   sudo zpool scrub rpool
   sudo zpool scrub bpool
   ```
-- Create the genesis snapshot
+  Verify that there's no error
   ```
-  sudo zfs snapshot rpool/ROOT/archlinux@genesis
-  sudo zfs snapshot rpool/data@genesis
-  sudo zfs snapshot rpool/data/home@genesis
-  sudo zfs snapshot rpool/data/home/root@genesis
-  sudo zfs snapshot bpool/BOOT/default@genesis
+  sudo zpool status -x -v
+  ```
+- Create snapshots
+  ```
+  sudo zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
   ```
 - [Install packages](https://github.com/millierni/archlinux-packages)
