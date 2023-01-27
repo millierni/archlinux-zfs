@@ -490,7 +490,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   reboot
   ```
-- Add ZFS repo and update the software database
+- Add ZFS and multilib repository and update the pacman database
   ```
   su
   ```
@@ -506,16 +506,6 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   [archzfs]
   Include = /etc/pacman.d/mirrorlist-archzfs
   EOF
-  ```
-  ```
-  exit
-  ```
-  ```
-  sudo pacman -Syy
-  ```
-- Activate the multilib repository
-  ```
-  su
   ```
   ```
   cat >> /etc/pacman.conf << EOF
