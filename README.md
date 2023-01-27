@@ -464,20 +464,20 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
 - Scrub the `rpool` and `bpool`
   ```
-  sudo zpool scrub rpool
-  sudo zpool scrub bpool
+  zpool scrub rpool
+  zpool scrub bpool
   ```
   Verify that there's no error
   ```
-  sudo zpool status -x -v
+  zpool status -x -v
   ```
 - Create the genesis snapshot
   ```
-  sudo zfs snapshot rpool/ROOT/archlinux@genesis
-  sudo zfs snapshot rpool/data@genesis
-  sudo zfs snapshot rpool/data/home@genesis
-  sudo zfs snapshot rpool/data/home/root@genesis
-  sudo zfs snapshot bpool/BOOT/default@genesis
+  zfs snapshot rpool/ROOT/archlinux@genesis
+  zfs snapshot rpool/data@genesis
+  zfs snapshot rpool/data/home@genesis
+  zfs snapshot rpool/data/home/root@genesis
+  zfs snapshot bpool/BOOT/default@genesis
   ```
 - Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
   - Install graphics drivers
