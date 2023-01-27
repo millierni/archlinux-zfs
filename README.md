@@ -479,6 +479,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   zfs snapshot rpool/data/home/root@genesis
   zfs snapshot bpool/BOOT/default@genesis
   ```
+  - Verify the snapshots
+    ```
+    zfs list -t snapshot
+    ```
 - Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
   - Install graphics drivers
     - AMD
