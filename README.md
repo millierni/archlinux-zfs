@@ -657,4 +657,32 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     echo "alias sudo='sudo '" | sudo tee -a /etc/bash.bashrc
     echo "alias pacman='/etc/.pacman-zfs-snapshot.sh'" | sudo tee -a /etc/bash.bashrc
     ```
+- Change `pulseaudio` by `pipewire` (optional)
+  ```
+  sudo pacman -S --needed pipewire
+  sudo pacman -S --needed pipewire-media-session
+  sudo pacman -S --needed pipewire-alsa
+  sudo pacman -S --needed pipewire-jack
+  sudo pacman -S --needed pipewire-zeroconf
+  sleep 1
+  sudo pacman -R pulseaudio-equalizer-ladspa
+  sudo pacman -R pulseaudio-alsa
+  sudo pacman -R gnome-bluetooth blueberry
+  sudo pacman -R pulseaudio-bluetooth
+  sudo pacman -R pulseaudio
+  sleep 1
+  sudo pacman -S --needed pipewire-pulse
+  #sudo pacman -S --needed blueberry #If you want to install bluetooth
+  ```
+  ```
+  sudo reboot
+  ```
+- Create the genesis snapshot
+  ```
+  sudo zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
+  sudo zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
+  ```
 - [Install packages](https://github.com/millierni/archlinux-packages)
