@@ -458,6 +458,8 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   - Generate a new GRUB configuration file
   ```
   grub-mkconfig -o /boot/grub/grub.cfg
+  ```
+  ```
   reboot  # reboot the OS
   ```
 - Install desktop environment [List](https://wiki.archlinux.org/title/Desktop_environment)
@@ -476,7 +478,12 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       ```
   - KDE Plasma desktop
   ```
-  pacman -Sy xorg plasma kde-applications plasma-wayland-session sddm
+  pacman -Syy
+  ```
+  ```
+  pacman -S xorg plasma kde-applications plasma-wayland-session sddm
+  ```
+  ```
   systemctl enable sddm
   ```
   - Reboot the OS
@@ -566,13 +573,13 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
     EDITOR=nano crontab -e
     ```
     - Add this
-    ```
-    MAILTO=magic@unicorn.com
-    # zpool scrub every Monday 8 PM and send an email every Tuesday 8 AM 
-    0 20 * * 1 /sbin/zpool scrub bpool
-    0 20 * * 1 /sbin/zpool scrub rpool
-    0 8 * * 2 /sbin/zpool status
-    ```
+      ```
+      MAILTO=magic@unicorn.com
+      # zpool scrub every Monday 8 PM and send an email every Tuesday 8 AM 
+      0 20 * * 1 /sbin/zpool scrub bpool
+      0 20 * * 1 /sbin/zpool scrub rpool
+      0 8 * * 2 /sbin/zpool status
+      ```
 - Create an alias to modify the `pacman command`
   - Create `.pacman-zfs-snapshot.sh`
     ```
@@ -676,6 +683,12 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   ```
   sudo reboot
+  ```
+- Scrub the `rpool` and `bpool`  
+  Verify that there's no error
+  ```
+  sudo zpool scrub rpool
+  sudo zpool scrub bpool
   ```
 - Create the genesis snapshot
   ```
