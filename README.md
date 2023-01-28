@@ -708,6 +708,10 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   ```
   sudo reboot
   ```
+- Verify that the `Server Name` is running `PulseAudio (on PipeWire)`
+  ```
+  pactl info
+  ```
 - Scrub the `rpool` and `bpool`
   ```
   sudo zpool scrub rpool
