@@ -618,26 +618,23 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       #!/bin/bash
 
       # Manage the arguments of the pacman command
-      if [[ "$@" == *"-Syu"* ]] || [[ "$@" == *"-Syyu"* ]];
-      then
-        nbUpdates="$(echo "$(pacman -Qu)" | wc -l)"
-        if (( "$nbUpdates" > 1 ));
-        then
-          echo "There are "$nbUpdates" packages available to update..."
-          echo "$(pacman -Qu)"
+      if [[ "$@" == *"-Syu"* ]] || [[ "$@" == *"-Syyu"* ]]; then
+        nbUpdates="$(pacman -Qu | wc -l)"
+        if (( nbUpdates > 1 )); then
+          echo "There are $nbUpdates packages available to update..."
+          pacman -Qu
           read -p "Do you want to create snapshots before updating? (y/n) " answer
-          if [[ $answer =~ ^[Yy]$ ]];
-          then
+          if [[ "$answer" =~ ^[Yy]$ ]]; then
             # Create snapshots
-            sudo zfs snapshot rpool/ROOT/archlinux@`date +%Y-%m-%d-%H:%M:%S`
+            sudo zfs snapshot rpool/ROOT/archlinux@$(date +%Y-%m-%d-%H:%M:%S)
             echo "ZFS: snapshot of rpool/ROOT/archlinux   [created]"
-            sudo zfs snapshot rpool/data@`date +%Y-%m-%d-%H:%M:%S`
+            sudo zfs snapshot rpool/data@$(date +%Y-%m-%d-%H:%M:%S)
             echo "ZFS: snapshot of rpool/data             [created]"
-            sudo zfs snapshot rpool/data/home@`date +%Y-%m-%d-%H:%M:%S`
+            sudo zfs snapshot rpool/data/home@$(date +%Y-%m-%d-%H:%M:%S)
             echo "ZFS: snapshot of rpool/data/home        [created]"
-            sudo zfs snapshot rpool/data/home/root@`date +%Y-%m-%d-%H:%M:%S`
+            sudo zfs snapshot rpool/data/home/root@$(date +%Y-%m-%d-%H:%M:%S)
             echo "ZFS: snapshot of rpool/data/home/root   [created]"
-            sudo zfs snapshot bpool/BOOT/default@`date +%Y-%m-%d-%H:%M:%S`
+            sudo zfs snapshot bpool/BOOT/default@$(date +%Y-%m-%d-%H:%M:%S)
             echo "ZFS: snapshot of bpool/BOOT/default     [created]"
           fi
           # Execute the command and ignore zfs-linux and linux
