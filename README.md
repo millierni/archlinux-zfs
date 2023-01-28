@@ -623,7 +623,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
         if (( nbUpdates > 1 )); then
           echo "There are $nbUpdates packages available to update..."
           pacman -Qu
-          read -p "Do you want to create snapshots before updating? (y/n) " answer
+          read -rp "Do you want to create snapshots before updating? (y/n) " answer
           if [[ "$answer" =~ ^[Yy]$ ]]; then
             # Create snapshots
             sudo zfs snapshot rpool/ROOT/archlinux@$(date +%Y-%m-%d-%H:%M:%S)
@@ -651,34 +651,33 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
       fi
       
       # Verify if there is an update available for zfs-linux and search for the compatible linux kernel
-      updateLinuxKernel=false
-      zfsLinux_availableVersion=$(pacman -Si zfs-linux | grep Version | awk '{print $3}')
-      zfsLinux_installedVersion=$(pacman -Qi zfs-linux | grep Version | awk '{print $3}')                               
-      if [[ "$zfsLinux_availableVersion" != "$zfsLinux_installedVersion" ]] && [[ "$packagesUpdated" = true ]];
-      then
+
+      # Check if packages have been updated and if there is an update available for zfs-linux
+      if [[ "$packagesUpdated" = true ]] && pacman -Qu | grep -q 'zfs-linux'; then
+        # Get the compatible version of the linux kernel from the zfs-linux package information
         linuxCompatibleVersion=$(pacman -Si zfs-linux | grep -oP "(?<= linux=)[^\s]+")
         currentLinuxVersion=$(uname -r)
-        if [[ "$currentLinuxVersion" != "$linuxCompatibleVersion" ]];
-        then
+        # Compare the current linux kernel version with the compatible version of the zfs-linux package
+        if [[ "$currentLinuxVersion" != "$linuxCompatibleVersion" ]]; then
           updateLinuxKernel=true
         fi
-      fi  
+      fi
 
-      # Prompt the user for updating linux and zfs-linux to there last compatible version
-      if [[ "$updateLinuxKernel" = true ]];
-      then
-        read -p "Do you want to update linux and zfs-linux? (y/n) " answer
-        if [[ $answer =~ ^[Yy]$ ]];
-        then
-          sudo pacman -S linux="$linuxCompatibleVersion" zfs-linux="$zfsLinux_availableVersion"
+
+      # Prompt the user for updating linux and zfs-linux to their last compatible version
+      if [[ "$updateLinuxKernel" = true ]]; then
+        read -rp "Do you want to update linux and zfs-linux? (y/n) " answer
+        if [[ $answer =~ ^[Yy]$ ]]; then
+          sudo pacman -S "linux=$linuxCompatibleVersion" "zfs-linux=$zfsLinux_availableVersion"
           echo "It is recommended to reboot the system"
-        elif [[ $answer =~ ^[Nn]$ ]];
-        then
-          exit
-        else  
+        elif [[ $answer =~ ^[Nn]$ ]]; then
+          exit 0
+        else
           echo "Please answer Y (yes) or N (no)."
+          exit 1
         fi
       fi
+
       ```
   - Change the permissions on `.pacman-zfs-snapshot.sh`
     ```
