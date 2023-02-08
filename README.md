@@ -9,7 +9,7 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
 - Download the ISO and create a bootable USB with an Arch Linux distro
   + [EndeavourOS](https://endeavouros.com/latest-release/)
   
-- Boot on the USB
+- Boot from the USB
 - Add ZFS repo and update the software database
   ```
   curl -L https://archzfs.com/archzfs.gpg |  pacman-key -a -
@@ -438,6 +438,49 @@ References:\[ [john_ransden-arch on ZFS](https://ramsdenj.com/2016/06/23/arch-li
   zpool import rpool -R /new_root
   exit
   ```
+- If update BIOS motherboard
+  - Boot from USB
+  - Install and load ZFS
+  - Import `bpool` and `rpool` and mount efi mountpoint
+    ```
+    zpool import -d /dev/disk/by-id -R /mnt $RPOOL
+    zpool import -d /dev/disk/by-id -R /mnt $BPOOL
+    mkdir -p /mnt/{efi0,efi1,efi2}
+    mount -t vfat ${DISK0}-part1 /mnt/efi0
+    mount -t vfat ${DISK1}-part1 /mnt/efi1
+    mount -t vfat ${DISK2}-part1 /mnt/efi2
+    ```
+  - Double check mounting points
+    ```
+    findmnt | grep /mnt
+    ```
+  - Chroot into new installation
+    ```
+    arch-chroot /mnt /usr/bin/env DISK0=$DISK0 DISK1=$DISK1 DISK2=$DISK2 RPOOL=$RPOOL BPOOL=$BPOOL /bin/bash
+    ```
+  - Run grub-install and grub-mkconfig
+    ```
+    ZPOOL_VDEV_NAME_PATH=1 grub-install --target=x86_64-efi --efi-directory=/efi0 --bootloader-id=GRUB
+    ZPOOL_VDEV_NAME_PATH=1 grub-mkconfig -o /boot/grub/grub.cfg
+    ```
+  - Exit chroot
+    ```
+    exit
+    ```
+  - Unmount filesystem
+    ```
+    umount -R /mnt
+    zfs umount -a
+    ```
+  - Export `bpool` and `rpool`
+    ```
+    zpool export $BPOOL
+    zpool export $RPOOL
+    ```
+  - Remove live media and prepare to reboot
+    ```
+    reboot
+    ```
 - After reboot, login as *root*
   - Import all the pools that are not listed with `zpool -list`
   ```
